@@ -6,7 +6,7 @@ defmodule Slackify.Spotify do
 
   @accounts_base "https://accounts.spotify.com"
   @authorize_endpoint "authorize"
-  @code_exchange_endpoint "api/token"
+  @token_exchange_endpoint "api/token"
 
   @api_base "https://api.spotify.com"
   @now_playing_endpoint "v1/me/player/currently-playing"
@@ -17,7 +17,7 @@ defmodule Slackify.Spotify do
 
   def exchange_code_for_refresh_token(code) do
     {:ok, response} = HTTPoison.post(
-      URI.merge(@accounts_base, @code_exchange_endpoint),
+      URI.merge(@accounts_base, @token_exchange_endpoint),
       {:form, _refresh_token_exchange_body(code)},
       %{},
       [hackney: [basic_auth: {System.get_env("SPOTIFY_CLIENT_ID"), System.get_env("SPOTIFY_CLIENT_SECRET")}]]
@@ -26,6 +26,20 @@ defmodule Slackify.Spotify do
     case Poison.Parser.parse!(response.body)["refresh_token"] do
       nil -> raise RuntimeError, message: "Couldn't get refresh token, body: " <> response.body
       refresh_token -> refresh_token
+    end
+  end
+
+  def exchange_refresh_token_for_access_token(refresh_token) do
+    {:ok, response} = HTTPoison.post(
+      URI.merge(@accounts_base, @token_exchange_endpoint),
+      {:form, _access_token_exchange_body(refresh_token)},
+      %{},
+      [hackney: [basic_auth: {System.get_env("SPOTIFY_CLIENT_ID"), System.get_env("SPOTIFY_CLIENT_SECRET")}]]
+    )
+
+    case Poison.Parser.parse!(response.body)["access_token"] do
+      nil -> raise RuntimeError, message: "Couldn't get access token, body: " <> response.body
+      access_token -> access_token
     end
   end
 
@@ -50,6 +64,13 @@ defmodule Slackify.Spotify do
       grant_type: "authorization_code",
       code: code,
       redirect_uri: System.get_env("SPOTIFY_REDIRECT_URL")
+    ]
+  end
+
+  def _access_token_exchange_body(refresh_token) do
+    [
+      grant_type: "refresh_token",
+      refresh_token: refresh_token
     ]
   end
 end
