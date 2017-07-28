@@ -8,8 +8,8 @@ defmodule SlackifyWeb.SlackOAuthController do
   def callback(conn, %{"code" => code}) do
     client = Slack.get_token!(code: code)
     IO.inspect client
-    conn
-    |> send_resp(200, "hello world")
+    conn = put_session(conn, :slack_user_id, client.token.other_params["user_id"])
+    redirect conn, to: "/"
   end
 
   defp host do
