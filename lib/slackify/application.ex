@@ -14,6 +14,8 @@ defmodule Slackify.Application do
       supervisor(SlackifyWeb.Endpoint, []),
       # Start your own worker by calling: Slackify.Worker.start_link(arg1, arg2, arg3)
       # worker(Slackify.Worker, [arg1, arg2, arg3]),
+      # Start background jobs
+      worker(Slackify.Scheduler, []),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
