@@ -44,10 +44,12 @@ defmodule Slackify.Spotify do
   end
 
   def get_current_track(access_token) do
-    HTTPoison.get(
+    {:ok, response} = HTTPoison.get(
       URI.merge(@api_base, @now_playing_endpoint),
       [{"Authorization", "Bearer " <> access_token}]
     )
+
+    Poison.Parser.parse!(response.body)
   end
 
   def _authorization_url_params do
