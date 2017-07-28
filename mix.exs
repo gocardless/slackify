@@ -43,7 +43,9 @@ defmodule Slackify.Mixfile do
       {:cowboy, "~> 1.0"},
       {:oauth2, "~> 0.9"},
       {:httpoison, "~> 0.12"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:quantum, ">= 2.0.0"},
+      {:timex, "~> 3.0"}
     ]
   end
 
