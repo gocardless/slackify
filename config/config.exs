@@ -11,7 +11,7 @@ config :slackify,
 
 # Configures the endpoint
 config :slackify, SlackifyWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: System.get_env("HOST"), port: 80],
   secret_key_base: "CCOo0YVNqusHSpdl92QyYW7rN3nuK/2B+gwdGdL63YL1+h8LrOR2FD5cCnUri1NE",
   render_errors: [view: SlackifyWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Slackify.PubSub,
