@@ -18,6 +18,8 @@ defmodule SlackifyWeb.Router do
     get "/", PageController, :index
     get "/slack", SlackOAuthController, :create
     get "/slack/callback", SlackOAuthController, :callback
+
+    get "/spotify_redirect", SpotifyController, :handle_redirect
   end
 
   # Other scopes may use custom stacks.
