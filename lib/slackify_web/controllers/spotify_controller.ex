@@ -1,8 +1,8 @@
 defmodule SlackifyWeb.SpotifyController do
   use SlackifyWeb, :controller
 
-  def handle_redirect(conn, _params) do
-    refresh_token = Slackify.Spotify.exchange_code_for_refresh_token(_params["code"])
+  def handle_redirect(conn, params) do
+    refresh_token = Slackify.Spotify.exchange_code_for_refresh_token(params["code"])
     access_token = Slackify.Spotify.exchange_refresh_token_for_access_token(refresh_token)
     now_playing = Slackify.Spotify.get_current_track(access_token)["item"]
 
